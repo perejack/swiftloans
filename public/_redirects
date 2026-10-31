@@ -1,0 +1,4 @@
+/pesapal/api/Auth/RequestToken  https://pay.pesapal.com/api/v1/Auth/RequestToken  200
+/pesapal/api/URLSetup/RegisterIPN  https://pay.pesapal.com/api/v1/URLSetup/RegisterIPN  200
+/pesapal/api/Transactions/SubmitOrderRequest  https://pay.pesapal.com/api/v1/Transactions/SubmitOrderRequest  200
+/*  /index.html  200

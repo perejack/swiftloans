@@ -1,0 +1,46 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["netlify/functions/**"]
+
+[[redirects]]
+  from = "/.netlify/functions/get-token"
+  to = "/.netlify/functions/get-token"
+  status = 200
+  force = true
+  methods = ["GET", "POST", "OPTIONS"]
+  [redirects.headers]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET,POST,OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+[[redirects]]
+  from = "/.netlify/functions/submit-order"
+  to = "/.netlify/functions/submit-order"
+  status = 200
+  force = true
+  methods = ["GET", "POST", "OPTIONS"]
+  [redirects.headers]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET,POST,OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+[[redirects]]
+  from = "/.netlify/functions/ipn"
+  to = "/.netlify/functions/ipn"
+  status = 200
+  force = true
+  methods = ["GET", "POST", "OPTIONS"]
+  [redirects.headers]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET,POST,OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
