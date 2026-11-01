@@ -52,7 +52,7 @@ export default async (req, res) => {
     let { 
       msisdn: phoneNumber, 
       phoneNumber: altPhoneNumber, 
-      amount = 129, 
+      amount = 10, 
       description = 'PayHero Loan Activation Fee',
       reference: clientReference 
     } = req.body;
@@ -77,7 +77,7 @@ export default async (req, res) => {
     const callback_url = `${origin}/api/payment-callback`;
 
     const payheroPayload = {
-      amount: Number(amount) || 129,
+      amount: Number(amount) || 10,
       phone_number: normalizedPhone,
       channel_id: PAYHERO_CHANNEL_ID,
       provider: 'm-pesa',
@@ -119,7 +119,7 @@ export default async (req, res) => {
           .insert({
             transaction_request_id: checkoutId,
             status: 'pending',
-            amount: Number(amount) || 129,
+            amount: Number(amount) || 10,
             phone: normalizedPhone,
             reference: reference,
           });

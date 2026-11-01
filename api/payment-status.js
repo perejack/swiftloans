@@ -73,14 +73,14 @@ export default async (req, res) => {
     }
     
     let paymentStatus = 'PENDING';
-    let currentAmount = 129;
+    let currentAmount = 10;
     let currentPhone = '';
     let receiptNumber = null;
     let resultDesc = null;
     let resultCode = null;
 
     if (transaction) {
-      currentAmount = transaction.amount || 129;
+      currentAmount = transaction.amount || 10;
       currentPhone = transaction.phone || '';
       receiptNumber = transaction.receipt_number;
       resultDesc = transaction.result_description;
