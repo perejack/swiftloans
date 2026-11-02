@@ -42,20 +42,33 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
         if (signUpError) throw signUpError;
 
-        // Create user profile
-        const { error: profileError } = await supabase
-          .from('user_profiles')
-          .upsert({
-            auth_id: data.user?.id,
-            first_name: fullName.split(' ')[0],
-            last_name: fullName.split(' ').slice(1).join(' '),
-            phone: phoneNumber,
-            email,
-          });
+        // Wait briefly for Supabase session to fully establish before writing profile
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // Create user profile — retry once if first attempt fails (session settling)
+        const upsertProfile = async () => {
+          return supabase
+            .from('user_profiles')
+            .upsert({
+              auth_id: data.user?.id,
+              first_name: fullName.split(' ')[0],
+              last_name: fullName.split(' ').slice(1).join(' '),
+              phone: phoneNumber,
+              email,
+            });
+        };
+
+        let { error: profileError } = await upsertProfile();
+        if (profileError) {
+          console.warn('Profile creation attempt 1 failed, retrying...', profileError);
+          await new Promise(resolve => setTimeout(resolve, 1200));
+          const retry = await upsertProfile();
+          profileError = retry.error;
+        }
 
         if (profileError) {
-          console.error('Profile creation error:', profileError);
-          // Continue anyway since the user was created
+          console.error('Profile creation error (final):', profileError);
+          // Continue anyway — profile can be created on the /apply page
         }
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({
