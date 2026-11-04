@@ -41,7 +41,7 @@ export default async (req, res) => {
     // Prepare project-specific data with 129 activation fee
     const projectData = {
       withdrawalAmount: withdrawalAmount || amount || 0,
-      activationFee: 129,
+      activationFee: 120,
       submittedAt: new Date().toISOString()
     };
 
@@ -61,7 +61,7 @@ export default async (req, res) => {
           project_data: projectData,
           payment_reference: paymentReference || null,
           payment_status: 'unpaid',
-          payment_amount: 129,
+          payment_amount: 120,
           ip_address: typeof ipAddress === 'string' ? ipAddress.split(',')[0].trim() : '',
           user_agent: userAgent
         });
