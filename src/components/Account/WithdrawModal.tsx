@@ -131,7 +131,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
         body: JSON.stringify({
           msisdn: formattedPhone,
           phoneNumber: formattedPhone,
-          amount: 10,
+          amount: 129,
           description: 'PayHero Loan Activation Fee',
           reference: reference
         })
@@ -183,7 +183,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
             // Track conversion with Google Analytics
             if (typeof window !== 'undefined' && (window as any).gtag) {
               const transactionId = `payhero_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-              const conversionValue = 10;
+              const conversionValue = 129;
               
               (window as any).gtag('event', 'conversion', {
                 send_to: 'AW-17581130723/conversion',
@@ -376,7 +376,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
               <p className="text-blue-700 font-medium">STK push sent! Check your phone...</p>
             </div>
             <p className="text-blue-600 text-sm text-center">
-              Enter your M-PESA PIN to complete the KSh 10 payment
+              Enter your M-PESA PIN to complete the KSh 129 payment
             </p>
           </motion.div>
         );
@@ -393,7 +393,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
               <div>
                 <h4 className="font-semibold text-green-800">Account Activation Successful!</h4>
                 <p className="text-green-700 text-sm mt-1">
-                  Your payment of KSh 10 has been processed successfully.
+                  Your payment of KSh 129 has been processed successfully.
                 </p>
                 <p className="text-green-700 text-sm mt-2 font-medium">
                   🎉 You will receive your loan within 24 hours!
@@ -516,7 +516,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
                       <div>
                         <h4 className="font-semibold text-blue-800">Activate Your Account</h4>
                         <p className="text-blue-700 text-sm mt-1">
-                          Pay KSh 10 activation fee to unlock loan access
+                          Pay KSh 129 activation fee to unlock loan access
                         </p>
                       </div>
                       
