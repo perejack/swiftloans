@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://clrfuyyxptssekmvbkvl.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNscmZ1eXl4cHRzc2VrbXZia3ZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0ODMwNDAsImV4cCI6MjEwOTA1OTA0MH0.1XVjn-U1ic3WAlLeI3o28D929JLTYNKWt8wBFdx9LGg';
+// Use service role key on serverless functions for admin table access
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNscmZ1eXl4cHRzc2VrbXZia3ZsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MzQ4MzA0MCwiZXhwIjoyMTA5MDU5MDQwfQ.8jo38_WWuXHct12ZgEIVj0l8W3ui8s2e6VPjXzgWMQo';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 

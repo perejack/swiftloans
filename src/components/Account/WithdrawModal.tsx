@@ -86,14 +86,26 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
     setError(null);
 
     try {
-      const formattedPhone = paymentPhone.startsWith('0') 
-        ? '254' + paymentPhone.substring(1)
-        : !paymentPhone.startsWith('254') ? '254' + paymentPhone : paymentPhone;
+      // Clean phone number of all non-digits, spaces, +
+      let digits = paymentPhone.replace(/\D/g, '');
+      if (digits.startsWith('0') && digits.length === 10) {
+        digits = '254' + digits.substring(1);
+      } else if (digits.length === 9) {
+        digits = '254' + digits;
+      }
+
+      if (digits.length !== 12 || !digits.startsWith('254')) {
+        setError('Please enter a valid Safaricom M-PESA phone number (e.g. 0712345678 or 0110123456)');
+        setLoading(false);
+        return;
+      }
+
+      const formattedPhone = digits;
 
       // Generate reference
       const reference = `PAYHERO-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-      // Save application data first
+      // Save application data first (non-blocking)
       try {
         await fetch('/api/submit-application', {
           method: 'POST',
@@ -108,7 +120,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
         });
         console.log('Application data saved');
       } catch (err) {
-        console.error('Failed to save application:', err);
+        console.warn('Non-blocking application save notice:', err);
       }
 
       const response = await fetch('/api/initiate-payment', {
@@ -133,7 +145,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
         setWithdrawStatus('payment-initiated');
         pollPaymentStatus(requestId);
       } else {
-        setError(data.message || 'Failed to initiate payment');
+        setError(data.message || 'Payment initiation failed. Please check your phone number and try again.');
       }
     } catch (error) {
       console.error('Payment initiation error:', error);

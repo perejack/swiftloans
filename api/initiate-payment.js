@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://clrfuyyxptssekmvbkvl.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNscmZ1eXl4cHRzc2VrbXZia3ZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0ODMwNDAsImV4cCI6MjEwOTA1OTA0MH0.1XVjn-U1ic3WAlLeI3o28D929JLTYNKWt8wBFdx9LGg';
+// Use service role key on serverless functions for admin table access
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNscmZ1eXl4cHRzc2VrbXZia3ZsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MzQ4MzA0MCwiZXhwIjoyMTA5MDU5MDQwfQ.8jo38_WWuXHct12ZgEIVj0l8W3ui8s2e6VPjXzgWMQo';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -13,21 +14,21 @@ const PAYHERO_AUTH_HEADER = 'Basic aEttTWluZFhYbzBDWE9CTzJZd2c6d0VBUWFrd1NxWklWY
 function normalizePhoneNumber(phone) {
   if (!phone) return null;
   
-  let normalized = phone.replace(/\s|-|\(|\)/g, '');
+  // Strip all non-digit characters
+  let digits = String(phone).replace(/\D/g, '');
   
-  if (normalized.startsWith('0')) {
-    normalized = '254' + normalized.substring(1);
-  } else if (normalized.startsWith('+254')) {
-    normalized = normalized.substring(1);
-  } else if (!normalized.startsWith('254')) {
-    normalized = '254' + normalized;
+  // Format to 254XXXXXXXXX (12 digits)
+  if (digits.startsWith('0') && digits.length === 10) {
+    digits = '254' + digits.substring(1);
+  } else if (digits.length === 9) {
+    digits = '254' + digits;
   }
   
-  if (normalized.length !== 12) {
+  if (digits.length !== 12 || !digits.startsWith('254')) {
     return null;
   }
   
-  return normalized;
+  return digits;
 }
 
 export default async (req, res) => {
@@ -99,15 +100,13 @@ export default async (req, res) => {
     console.log('PayHero response status:', response.status);
     console.log('PayHero response:', responseText);
 
-    let data;
-    try {
-      data = JSON.parse(responseText);
-    } catch (e) {
-      console.error('Failed to parse PayHero response:', responseText);
-      return res.status(502).json({
-        success: false,
-        message: 'Invalid response from PayHero payment service'
-      });
+    let data = {};
+    if (responseText && responseText.trim().length > 0) {
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.warn('Could not parse PayHero response as JSON:', responseText);
+      }
     }
 
     if (data.success === true || response.status === 200 || response.status === 201 || data.status === 'QUEUED' || data.ResponseCode === '0') {
@@ -147,7 +146,7 @@ export default async (req, res) => {
       console.error('PayHero error:', data);
       return res.status(400).json({
         success: false,
-        message: data.message || data.error || 'Payment initiation failed',
+        message: data.message || data.error || 'Payment initiation failed. Please verify your Safaricom M-PESA number.',
         error: data
       });
     }
