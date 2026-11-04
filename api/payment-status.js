@@ -100,11 +100,10 @@ export default async (req, res) => {
       
       if (payheroData) {
         const phStatus = (payheroData.status || '').toUpperCase();
-        const phSuccess = payheroData.success === true;
 
-        if (phStatus === 'SUCCESS' || phStatus === 'COMPLETED' || phSuccess) {
+        if (phStatus === 'SUCCESS' || phStatus === 'COMPLETED') {
           paymentStatus = 'SUCCESS';
-          receiptNumber = payheroData.provider_reference || payheroData.third_party_reference || payheroData.mpesa_reference || receiptNumber;
+          receiptNumber = payheroData.payment_reference || payheroData.provider_reference || payheroData.third_party_reference || payheroData.mpesa_reference || receiptNumber;
           resultDesc = payheroData.message || 'Payment successful';
           resultCode = '0';
 
@@ -122,18 +121,24 @@ export default async (req, res) => {
           }
         } else if (phStatus === 'FAILED' || phStatus === 'CANCELLED') {
           paymentStatus = 'FAILED';
-          resultDesc = payheroData.message || 'Payment failed';
+          resultDesc = payheroData.message || 'Payment failed or cancelled by user';
+          resultCode = '1';
           
           if (transaction) {
             await supabase
               .from('transactions')
               .update({
                 status: 'failed',
+                result_code: '1',
                 result_description: resultDesc,
                 updated_at: new Date().toISOString()
               })
               .eq('id', transaction.id);
           }
+        } else {
+          // QUEUED, PENDING, PROCESSING — waiting for user to enter PIN on phone
+          paymentStatus = 'PENDING';
+          console.log(`Payment ${reference} is currently ${phStatus || 'PENDING'}, waiting for M-PESA PIN...`);
         }
       }
     }

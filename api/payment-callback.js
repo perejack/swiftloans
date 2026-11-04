@@ -33,10 +33,13 @@ export default async (req, res) => {
     const receipt = payload.MpesaReceiptNumber || payload.TransactionReceipt || payload.provider_reference || null;
 
     let status = 'failed';
-    if (responseCode === 0 || responseCode === '0' || payload.status === 'SUCCESS' || payload.status === 'COMPLETED' || payload.success === true) {
+    const statusUpper = String(payload.status || '').toUpperCase();
+    if (responseCode === 0 || responseCode === '0' || statusUpper === 'SUCCESS' || statusUpper === 'COMPLETED') {
       status = 'success';
-    } else if (responseCode === 1032 || responseCode === 1031 || responseCode === 1 || payload.status === 'CANCELLED') {
+    } else if (responseCode === 1032 || responseCode === 1031 || statusUpper === 'CANCELLED') {
       status = 'cancelled';
+    } else if (statusUpper === 'QUEUED' || statusUpper === 'PENDING' || statusUpper === 'PROCESSING') {
+      status = 'pending';
     }
 
     let transaction = null;

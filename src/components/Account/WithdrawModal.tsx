@@ -157,7 +157,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
 
   const pollPaymentStatus = async (paymentRef: string) => {
     let attempts = 0;
-    const maxAttempts = 30; // Poll for 5 minutes (30 * 10 seconds)
+    const maxAttempts = 35; // Poll for ~2 minutes (35 * 3.5 seconds)
 
     const poll = async () => {
       try {
@@ -176,7 +176,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
           const status = payment.status;
           const resultCode = payment.resultCode;
           
-          if (status === 'SUCCESS' || resultCode === '0' || resultCode === 0) {
+          if (status === 'SUCCESS') {
             console.log('Payment detected as successful!');
             setWithdrawStatus('payment-success');
             
@@ -229,7 +229,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
             ]);
             
             return;
-          } else if (status === 'FAILED' || (resultCode && resultCode !== '0' && resultCode !== 0 && status !== 'PENDING')) {
+          } else if (status === 'FAILED') {
             console.log('Payment failed with status:', status);
             setWithdrawStatus('failed');
             setError(`Payment failed: ${payment.resultDesc || 'Please try again.'}`);
@@ -243,13 +243,14 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
           }
           
           console.log('Payment still pending, continuing to poll...');
+          setWithdrawStatus('payment-initiated');
         } else {
           console.log('Payment status API error, continuing to poll:', data.error);
         }
 
         attempts++;
         if (attempts < maxAttempts) {
-          setTimeout(poll, 10000);
+          setTimeout(poll, 3500);
         } else {
           setWithdrawStatus('failed');
           setError('Payment timeout. Please try again.');
@@ -263,7 +264,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
         console.error('Status check error:', error);
         attempts++;
         if (attempts < maxAttempts) {
-          setTimeout(poll, 10000);
+          setTimeout(poll, 3500);
         } else {
           setWithdrawStatus('failed');
           setError('Unable to verify payment status.');
@@ -276,7 +277,9 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
       }
     };
 
-    poll();
+    // Wait 3 seconds before first check to give M-PESA STK prompt time to reach phone
+    setTimeout(poll, 3000);
+  };
   };
 
   const resetPaymentFlow = () => {
