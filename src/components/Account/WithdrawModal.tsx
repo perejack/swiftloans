@@ -280,7 +280,6 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
     // Wait 3 seconds before first check to give M-PESA STK prompt time to reach phone
     setTimeout(poll, 3000);
   };
-  };
 
   const resetPaymentFlow = () => {
     setShowPaymentModal(false);
