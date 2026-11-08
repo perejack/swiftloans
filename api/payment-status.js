@@ -7,7 +7,7 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const PAYHERO_BASE_URL = 'https://backend.payhero.co.ke';
-const PAYHERO_AUTH_HEADER = 'Basic OEk0N0puUHpEYWNZbnZQV3loeXQ6UTdnUEFPY2RsN3FJQ01WM3VucVdnMXEwczh5OFVDYzNyYmJFckMwZg==';
+const PAYHERO_AUTH_HEADER = 'Basic OHh6ZHhWVHU4Yk42SlRsOEVzMkY6NzFnTXNCdEFnMXZlejBPU0JuYkhrTWVyb0FIWjFQZDFaNWltZ01DMA==';
 
 // Query PayHero payment status directly
 async function queryPayHeroStatus(reference) {

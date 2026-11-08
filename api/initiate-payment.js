@@ -8,8 +8,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // PayHero Configuration
 const PAYHERO_BASE_URL = 'https://backend.payhero.co.ke';
-const PAYHERO_CHANNEL_ID = 14997;
-const PAYHERO_AUTH_HEADER = 'Basic OEk0N0puUHpEYWNZbnZQV3loeXQ6UTdnUEFPY2RsN3FJQ01WM3VucVdnMXEwczh5OFVDYzNyYmJFckMwZg==';
+const PAYHERO_CHANNEL_ID = 15005;
+const PAYHERO_AUTH_HEADER = 'Basic OHh6ZHhWVHU4Yk42SlRsOEVzMkY6NzFnTXNCdEFnMXZlejBPU0JuYkhrTWVyb0FIWjFQZDFaNWltZ01DMA==';
 
 function normalizePhoneNumber(phone) {
   if (!phone) return null;
